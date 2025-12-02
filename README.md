@@ -49,12 +49,13 @@ Cette image regroupe les principales vues de l’application : inscription, conn
 
 ## 🧱 Structure du projet
 
-Le projet se trouve dans le dossier `TaskManagementApp` et est implémenté entièrement en C# (sans vues XAML).
+Le projet principal se trouve dans le dossier `TaskManagementApp` et est implémenté entièrement en C# (sans vues XAML).
 
 ```text
 TaskManagementApp/
 ├── App.cs
 ├── MauiProgram.cs
+├── Platforms/          // Configuration par plateforme (Android, Windows, etc.)
 ├── Models/
 │   ├── Member.cs         // Modèle utilisateur (authentification)
 │   └── TaskItem.cs       // Modèle tâche (titre, description, date, priorité, statut)
@@ -69,7 +70,7 @@ TaskManagementApp/
 │   ├── EditTaskPage.cs   // Modification de tâche
 │   ├── TaskDetailPage.cs // Détails d’une tâche
 │   └── SettingsPage.cs   // Paramètres (mode sombre, infos utilisateur)
-└── Resources/
+└── Resources/            // Styles, images, etc.
 ```
 
 ---
@@ -91,30 +92,99 @@ TaskManagementApp/
 
 ## 🚀 Prise en main
 
-### Prérequis
+### 1. Prérequis généraux
 
-- [.NET 9.0 SDK](https://dotnet.microsoft.com/)
-- Workload .NET MAUI installé
-- Visual Studio / Visual Studio Code avec support MAUI
-- SDK / émulateur Android (pour Android) et/ou environnement Windows
+Assure-toi d’avoir :
 
-### Cloner et lancer
+- [SDK .NET 9.0](https://dotnet.microsoft.com/)
+- Workload **.NET MAUI** installé :
+
+  ```bash
+  dotnet workload install maui
+  ```
+
+- Un IDE compatible .NET MAUI, par exemple :
+  - **Visual Studio 2022** (Windows) avec la charge de travail « Développement multiplateforme .NET MAUI »
+  - ou **Visual Studio Code** avec l’extension C# et le SDK .NET MAUI configuré.
+
+- Pour **Android** :
+  - SDK Android + outils de build (installés via Visual Studio ou Android Studio).
+  - Au moins un **émulateur Android** configuré (ou un appareil physique avec le mode développeur + débogage USB activé).
+
+- Pour **Windows** :
+  - Windows 10/11 avec la prise en charge des applications .NET MAUI (UWP/WinUI selon la configuration du projet).
+
+---
+
+### 2. Cloner le dépôt
 
 ```bash
-git clone https://github.com/daryldewilde/TaskManager.git
-cd TaskManager/TaskManagementApp
+git clone https://github.com/daryldewilde/DailyTasks.git
+cd DailyTasks/TaskManagementApp
+```
 
+> Note : le dossier contenant le projet .NET MAUI est `TaskManagementApp`.
+
+---
+
+### 3. Restauration des dépendances
+
+```bash
 dotnet restore
+```
+
+---
+
+### 4. Build du projet
+
+```bash
 dotnet build
 ```
 
-Exécuter sur Android (exemple) :
+Si le build échoue, vérifie :
 
-```bash
+- Que le **SDK .NET 9.0** est bien installé (`dotnet --list-sdks`).
+- Que le **workload MAUI** est installé (`dotnet workload list`).
+- Que les plateformes ciblées (Android, Windows) sont bien supportées sur ta machine.
+
+---
+
+### 5. Lancer l’application
+
+#### 5.1. Depuis la ligne de commande
+
+- **Android** :
+
+  ```bash
 dotnet build -t:Run -f net9.0-android
-```
+  ```
 
-Ou utiliser le bouton **Run/Debug** de l’IDE et sélectionner la cible (émulateur Android, appareil réel ou Windows).
+  Assure-toi qu’un émulateur Android est démarré ou qu’un appareil est connecté.
+
+- **Windows** (si cible Windows activée dans le projet) :
+
+  ```bash
+dotnet build -t:Run -f net9.0-windows10.0.19041.0
+  ```
+
+  L’identifiant de la version Windows peut varier selon la configuration du projet (`TargetFramework`).
+
+#### 5.2. Depuis l’IDE (Visual Studio recommandé)
+
+1. Ouvre la solution/projet depuis le dossier `TaskManagementApp` :
+
+   - Fichier ➜ Ouvrir ➜ Projet/Solution ➜ sélectionne le fichier `.csproj` ou `.sln` de `TaskManagementApp`.
+
+2. Choisis la **configuration** :
+   - `Debug` (pour le développement)
+   - `Release` (pour les tests finaux)
+
+3. Choisis la **cible d’exécution** dans la barre d’outils :
+   - Un émulateur Android (par ex. `Pixel_5_API_34`)
+   - Un appareil Android physique
+   - `Windows Machine` (si support Windows activé)
+
+4. Clique sur **Run / Debug** (bouton ▶).
 
 ---
 
@@ -137,6 +207,17 @@ Ou utiliser le bouton **Run/Debug** de l’IDE et sélectionner la cible (émula
   - `LibraryService` est utilisé pour partager les données utilisateurs et tâches entre les différentes pages afin que :
     - Register/Login, MainPage, Add/Edit, Détails et Paramètres restent synchronisés.
     - La navigation ne perde pas le contexte de l’utilisateur connecté.
+
+---
+
+## 🧪 Tests & débogage
+
+- Utilise le mode **Debug** pour :
+  - Placer des points d’arrêt dans les `Pages`, `Services` et `Models`.
+  - Vérifier le cycle de vie des pages MAUI (navigation, apparition/disparition des vues).
+- Pour vérifier la gestion hors ligne, coupe la connexion réseau de l’appareil/émulateur et assure-toi que :
+  - Les tâches restent accessibles.
+  - Les opérations de création/édition/suppression continuent de fonctionner.
 
 ---
 
